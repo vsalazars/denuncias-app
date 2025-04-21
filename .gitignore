@@ -1,0 +1,21 @@
+# Node (frontend)
+node_modules/
+dist/
+.vite/
+.env.local
+.env.*.local
+
+# Django (backend)
+backend/venv/
+backend/__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+.env
+
+# VSCode
+.vscode/
+
+# macOS
+.DS_Store
+

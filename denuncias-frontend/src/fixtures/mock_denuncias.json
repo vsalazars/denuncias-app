@@ -1,0 +1,88 @@
+[
+    {
+        "folio": "DEN01-2025",
+        "anonima": false,
+        "fecha_recepcion": "2025-03-18",
+        "datos_personales": {
+            "nombre_completo": "Juan Pérez García",
+            "telefono": "5512345678",
+            "correo": "usuario@correo.com",
+            "domicilio": {
+                "calle": "Av. Insurgentes",
+                "numero_exterior": "123",
+                "numero_interior": "4B",
+                "codigo_postal": "06700",
+                "municipio": "Cuauhtémoc"
+            }
+        },
+        "medidas_proteccion": true,
+        "ubicacion_hecho": {
+            "calle": "Calle Falsa",
+            "numero": "123",
+            "ciudad": "Ciudad de México",
+            "estado": "CDMX",
+            "pais": "México",
+            "codigo_postal": "01000"
+        },
+        "tipo_persona": "Persona servidora pública",
+        "persona_denunciada": {
+            "nombre": "Luis",
+            "apellidos": "Ramírez Soto",
+            "genero": "Masculino",
+            "descripcion": "Alto, delgado, moreno, ojos cafés, lunar en la mejilla izquierda, trabaja en el área de recursos humanos"
+        },
+        "descripcion_hechos": "El 10 de abril de 2025, Luis Ramírez Soto desvió recursos del fondo de capacitación para uso personal.",
+        "evidencia": [
+            "documento1.pdf",
+            "foto1.jpg"
+        ],
+        "clasificacion_faltas": {
+            "faltas_graves": [
+                "Cohecho",
+                "Peculado"
+            ],
+            "faltas_no_graves": [
+                "Incumplimiento de funciones"
+            ],
+            "hechos_corrupcion": [
+                "Tráfico de influencias"
+            ]
+        }
+    },
+    {
+        "anonima": true,
+        "datos_personales": {},
+        "medidas_proteccion": false,
+        "ubicacion_hecho": {
+            "calle": "Calle Reforma",
+            "numero": "45",
+            "ciudad": "Guadalajara",
+            "estado": "Jalisco",
+            "pais": "México",
+            "codigo_postal": "44100"
+        },
+        "tipo_persona": "Particular",
+        "persona_denunciada": {
+            "nombre": "María",
+            "apellidos": "López García",
+            "genero": "Femenino",
+            "descripcion": "Mediana estatura, cabello corto, usualmente vestida de traje gris, propietaria de empresa contratista"
+        },
+        "descripcion_hechos": "El 5 de marzo de 2025, María López ofreció soborno a un funcionario para obtener una adjudicación directa.",
+        "evidencia": [
+            "soborno_audio.mp3"
+        ],
+        "clasificacion_faltas": {
+            "faltas_graves": [],
+            "faltas_no_graves": [
+                "Violación de procedimientos de contratación"
+            ],
+            "hechos_corrupcion": [
+                "Soborno",
+                "Obstrucción de la justicia"
+            ]
+        }
+    }
+    
+]
+
