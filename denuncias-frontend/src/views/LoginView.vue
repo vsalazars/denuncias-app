@@ -49,7 +49,9 @@ const router = useRouter()
 
 const handleLogin = async () => {
   try {
-    const response = await axios.post('http://172.31.64.137:8000/api/token/', {
+ 
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/token/`, {
+
       correo: correo.value,
       password: password.value,
     })

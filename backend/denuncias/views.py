@@ -14,7 +14,8 @@ import string
 import random
 
 from .models import CustomUser, SeguimientoDenuncia
-from .serializers import CustomUserSerializer, CustomTokenObtainPairSerializer, SeguimientoSerializer
+from .models import Dependencia  # ✅ Asegúrate de importar el modelo
+from .serializers import CustomUserSerializer, CustomTokenObtainPairSerializer, SeguimientoSerializer, DependenciaSerializer
 from .utils import enviar_datos_usuario
 from datetime import date
 
@@ -67,6 +68,7 @@ def seguimiento_denuncia(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
 # ✅ Obtener el último seguimiento por folio
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -104,3 +106,22 @@ def historial_por_folio(request, folio):
     seguimientos = SeguimientoDenuncia.objects.filter(folio=folio).order_by('-fecha_turno')
     serializer = SeguimientoSerializer(seguimientos, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def dependencias_por_rol(request, rol):
+    estado = request.query_params.get('estado')
+
+    if not estado:
+        return Response({'error': 'El parámetro "estado" es obligatorio.'}, status=400)
+
+    try:
+        dependencias = Dependencia.objects.filter(
+            tipo_rol=rol.upper(),
+            estado=estado.upper()
+        )
+        serializer = DependenciaSerializer(dependencias, many=True)
+        return Response(serializer.data)
+    except Exception as e:
+        print("❌ Error en dependencias_por_rol:", str(e))
+        return Response({'error': 'Error interno del servidor'}, status=500)

@@ -1,8 +1,7 @@
 from rest_framework import serializers
-from django.contrib.auth import authenticate  # ✅ necesario para usar authenticate
-from .models import CustomUser
+from django.contrib.auth import authenticate
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import SeguimientoDenuncia
+from .models import CustomUser, SeguimientoDenuncia, Dependencia
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -11,16 +10,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-
-        # ✅ AÑADE datos al token aquí
-        token['rol'] = user.rol
-        token['correo'] = user.correo
-        token['first_name'] = user.first_name
-        token['last_name'] = user.last_name
-        token['estado'] = user.estado  # ✅ este campo es clave ahora
-
-
-        return token
+        return token  # no hace falta extender aquí
 
     def validate(self, attrs):
         correo = attrs.get('correo')
@@ -34,38 +24,70 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         refresh = self.get_token(user)
         access = refresh.access_token
 
+        # ✅ Estos campos irán en el token
+        access['rol'] = user.rol
+        access['correo'] = user.correo
+        access['first_name'] = user.first_name or ''
+        access['last_name'] = user.last_name or ''
+        access['estado'] = user.estado or ''
+        access['dependencia_id'] = user.dependencia.id if user.dependencia else None
+
         return {
             'refresh': str(refresh),
             'access': str(access),
         }
 
+class DependenciaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Dependencia
+        fields = ['id', 'nombre', 'tipo_rol']
+
 
 class CustomUserSerializer(serializers.ModelSerializer):
+    dependencia = DependenciaSerializer(read_only=True)
+    dependencia_id = serializers.PrimaryKeyRelatedField(
+        queryset=Dependencia.objects.all(),
+        source='dependencia',
+        write_only=True,
+        required=False
+    )
+
     class Meta:
         model = CustomUser
-        fields = ['id', 'correo', 'first_name', 'last_name', 'rol', 'estado', 'correo_enviado']
- 
+        fields = [
+            'id', 'correo', 'first_name', 'last_name', 'rol', 'estado',
+            'correo_enviado', 'dependencia', 'dependencia_id'
+        ]
+
     def validate(self, data):
         if data.get('rol') != 'ADMIN' and not data.get('estado'):
             raise serializers.ValidationError("El estado es obligatorio para todos los roles excepto ADMIN.")
         return data
 
     def create(self, validated_data):
-        password = validated_data.pop('password', None)  # ⚠️ puede venir None
+        password = validated_data.pop('password', None)
         user = CustomUser(**validated_data)
         if password:
             user.set_password(password)
         else:
             from django.utils.crypto import get_random_string
-            user.set_password(get_random_string(12))  # contraseña aleatoria segura
+            user.set_password(get_random_string(12))
         user.save()
         return user
 
 
 class SeguimientoSerializer(serializers.ModelSerializer):
+    dependencia = DependenciaSerializer(read_only=True)
+    dependencia_id = serializers.PrimaryKeyRelatedField(
+        queryset=Dependencia.objects.all(),
+        source='dependencia',
+        write_only=True,
+        required=False
+    )
+
     class Meta:
         model = SeguimientoDenuncia
-        fields = ['folio', 'estado', 'comentario', 'fecha_turno']
+        fields = ['folio', 'estado', 'comentario', 'fecha_turno', 'dependencia', 'dependencia_id']
         read_only_fields = ['fecha_turno']
 
     def to_representation(self, instance):
@@ -73,3 +95,4 @@ class SeguimientoSerializer(serializers.ModelSerializer):
         if instance.fecha_turno:
             data['fecha_turno'] = instance.fecha_turno.isoformat()
         return data
+

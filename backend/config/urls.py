@@ -5,9 +5,11 @@ from denuncias.views import (
     UserViewSet,
     CustomTokenObtainPairView,
     seguimiento_denuncia,
-    obtener_ultimos_seguimientos ,
-    historial_por_folio   
+    obtener_ultimos_seguimientos,
+    historial_por_folio,
+    dependencias_por_rol,  # ✅ esta línea
 )
+
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet)
@@ -19,5 +21,7 @@ urlpatterns = [
     path('api/seguimiento/', seguimiento_denuncia, name='seguimiento_denuncia'),
     path('api/seguimientos/ultimos/', obtener_ultimos_seguimientos),
     path('api/seguimientos/folio/<str:folio>/', historial_por_folio),
+    path('api/dependencias/<str:rol>/', dependencias_por_rol),
+
 
 ]

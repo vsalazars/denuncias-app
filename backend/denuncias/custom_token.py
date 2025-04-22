@@ -22,6 +22,9 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         access['correo'] = user.correo
         access['first_name'] = user.first_name or ''
         access['last_name'] = user.last_name or ''
+        # 👇 Estas dos líneas nuevas
+        access['estado'] = user.estado or ''
+        access['dependencia_id'] = user.dependencia.id if user.dependencia else None  # ✅ este es el que falta
 
         return {
             'refresh': str(refresh),
